@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.65" fx:controller="it.polito.tdp.numero.NumeroController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.numero.NumeroController">
    <top>
       <Label text="Indovina il numero" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -36,12 +35,12 @@
             <HBox alignment="CENTER" spacing="5.0">
                <children>
                   <TextField fx:id="txtProva" prefHeight="25.0" prefWidth="89.0" promptText="Il tuo tentativo" />
-                  <Button mnemonicParsing="false" onAction="#doProva" text="Prova" />
+                  <Button fx:id="btnProva" mnemonicParsing="false" onAction="#doProva" text="Prova" />
                </children>
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Label fx:id="lblVintoPerso" text="Hai vinto" textFill="#f50707">
+                  <Label fx:id="lblVintoPerso" text="Hai Vinto" textFill="#f50707">
                      <font>
                         <Font size="27.0" />
                      </font>
@@ -50,7 +49,7 @@
             </HBox>
             <HBox alignment="CENTER">
                <children>
-                  <Label fx:id="lblTentativi" text="Tentativi fatti: XXX" />
+                  <Label fx:id="lblTentativi" />
                </children>
             </HBox>
             <ProgressBar fx:id="pbTentativi" prefWidth="200.0" progress="0.35" />
