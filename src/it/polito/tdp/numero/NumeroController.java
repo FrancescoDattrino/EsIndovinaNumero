@@ -31,6 +31,9 @@ public class NumeroController {
     private ComboBox<Integer> boxDifficolta;
 
     @FXML
+    private Button btnProva;
+
+    @FXML
     private Button btnStartStop;
 
     @FXML
@@ -44,9 +47,78 @@ public class NumeroController {
 
     @FXML
     private ProgressBar pbTentativi;
+    
+    /**
+     * Modifica lo stato della partita da attiva a non-attiva
+     * e viceversa, aggiornando di conseguenza tutti gli elementi
+     * dell'interfaccia utente (label, choice box, bottoni, ecc).
+     * 
+     * @param state {@code true} per iniziare la partita, {@code false} per terminarla
+     */
+    private void changeGameState(boolean state) {
+    	
+    	
+    	inGame = state ;
+    	
+    	if(inGame==false) {
+    		boxDifficolta.setDisable(false);
+    		btnStartStop.setText("Inizia");
+    		txtProva.setDisable(true);
+    		btnProva.setDisable(true);
+    	} else {
+    		lblTentativi.setText(
+    				String.format("Tentativi %d/%d", 
+    						tentativi,
+    						maxTentativi));
+    		pbTentativi.setProgress(0.0);
+    		
+    		lblVintoPerso.setText("");
+    		
+    		btnStartStop.setText("Abbandona");
+    		boxDifficolta.setDisable(true);
+    		
+    		txtProva.setDisable(false);
+    		txtProva.setText("");
+    		btnProva.setDisable(false);
+    	}
+    }
 
     @FXML
     void doProva(ActionEvent event) {
+    	
+    	try {
+    		prova = Integer.parseInt( txtProva.getText() ) ;
+    	} catch(NumberFormatException e) {
+    		lblTentativi.setText("Formato errato") ;
+    		return ;
+    	}
+    	
+    	tentativi++ ;
+		lblTentativi.setText(
+				String.format("Tentativi %d/%d", 
+						tentativi, maxTentativi));
+		pbTentativi.setProgress((double)tentativi/maxTentativi);
+
+    	
+    	if( prova==segreto ) {
+    		// hai vinto
+    		lblVintoPerso.setText("Hai vinto");
+    		changeGameState(false);
+    		
+    	} else if( tentativi == maxTentativi ) {
+    		// hai perso, esauriti tentativi
+    		lblVintoPerso.setText("Hai perso");
+    		lblTentativi.setText(String.format(
+    				"Il numero era %d", segreto));
+    		
+    		changeGameState(false);
+    	} else if( prova<segreto ) {
+    		// troppo basso
+    		lblVintoPerso.setText("Troppo basso");
+    	} else { // (prova>segreto)
+    		// troppo alto
+    		lblVintoPerso.setText("Troppo alto");
+    	}
 
     }
 
@@ -55,23 +127,23 @@ public class NumeroController {
     	
     	if(inGame) {
     		// Abbandona
-    		inGame = false ;
+    		lblVintoPerso.setText("Hai abbandonato");
+    		lblTentativi.setText(String.format(
+    				"Il numero era %d", segreto));
+    		
+    		changeGameState(false);
     	} else {
     		// Inizia
+    		if(boxDifficolta.getValue()==null) {
+    			lblTentativi.setText("Seleziona un valore");
+    			return ;
+    		}
     		difficolta = boxDifficolta.getValue() ;
     		segreto = (int)(Math.random()*difficolta)+1 ;
     		tentativi = 0 ;
     		maxTentativi = (int)(Math.log(difficolta)/Math.log(2.0)+1) ;
     		
-    		lblTentativi.setText(
-    				String.format("Tentativi %d/%d", 
-    						tentativi,
-    						maxTentativi));
-    		
-    		btnStartStop.setText("Abbandona");
-    		boxDifficolta.setDisable(true);
-    		
-    		inGame = true ;
+    		changeGameState(true);
     	}
     	
 
